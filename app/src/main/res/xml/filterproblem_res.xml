@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--                match中value值暂不进行匹配，简单解释为edittext-->
+<!--                list中value值解释为spinner-->
+<resources>
+    <filter tag="problemfilter">
+        <item name="oj">
+            <list>
+                <value name="all"/>
+                <value name="POJ"/>
+                <value anme="HDU"/>
+            </list>
+        </item>
+
+        <item name="probid">
+            <match value="*"/>
+        </item>
+
+        <item name="title">
+            <match value="*"/>
+        </item>
+
+        <item name="source">
+            <match value="*"/>
+        </item>
+
+        <button name="OK" />
+    </filter>
+</resources>

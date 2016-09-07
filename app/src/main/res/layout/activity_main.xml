@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.program.astudio.as.widget.KXDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ly_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/drawer_left"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left" />
+
+    <FrameLayout
+        android:id="@+id/drawer_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top" />
+
+</cn.program.astudio.as.widget.KXDrawerLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="filter">
+        <attr name="textsize" format="dimension" />
+        <attr name="buttontextsize" format="dimension" />
+        <attr name="buttontext" format="string"/>
+        <attr name="xml" format="reference"/>
+    </declare-styleable>
+</resources>

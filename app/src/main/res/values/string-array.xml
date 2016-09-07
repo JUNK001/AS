@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="problemfilter">
+        <item>oj</item>
+        <item>prob id</item>
+        <item>title</item>
+        <item>source</item>
+    </string-array>
+
+    <string-array name="contentfilter">
+        <item>title</item>
+        <item>openness</item>
+        <item>manager</item>
+    </string-array>
+
+</resources>

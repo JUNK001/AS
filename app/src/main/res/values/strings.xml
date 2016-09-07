@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">AS</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main3">Main3Activity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_main5">Main5Activity</string>
+    <string name="drawer_menu_setting_text">设置</string>
+    <string name="drawer_menu_exit_text">退出</string>
+    <string name="drawer_menu_problem_text">题库</string>
+    <string name="drawer_menu_contest_text">比赛</string>
+    <string name="drawer_menu_starcontent_text">收藏夹</string>
+    <string name="drawer_menu_pasteboard_text">粘贴板</string>
+    <string name="drawer_menu_proxy_text">代理</string>
+    <string name="title_activity_app_start">AppStartActivity</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="copy_success">复制成功</string>
+    <string name="tip_double_click_exit">再次点击退出AS</string>
+</resources>
