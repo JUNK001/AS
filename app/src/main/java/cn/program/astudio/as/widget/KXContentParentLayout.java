@@ -113,7 +113,7 @@ public class KXContentParentLayout extends FrameLayout {
         if(mTapBackHelper.shouldInterceptTouchEvent(ev)){
             return true;
         }
-        return false;
+        return super.onInterceptTouchEvent(ev);
     }
 
     @Override

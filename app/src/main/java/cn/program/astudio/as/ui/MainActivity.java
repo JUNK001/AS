@@ -150,9 +150,7 @@ public class MainActivity extends BaseActivity implements
 
         @Override
         public void onDrawerCaptured(View drawerView) {
-            for(int i=mTapHelper.size()-1;i>=0;i--){
-                mTapHelper.tap(i);
-            }
+
         }
     }
 
