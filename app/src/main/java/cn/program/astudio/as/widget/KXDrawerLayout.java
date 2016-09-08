@@ -90,6 +90,11 @@ public class KXDrawerLayout extends ViewGroup {
         return (lp.openState & LayoutParams.FLAG_IS_OPENED)>0;
     }
 
+    public boolean isDrawerOpening(View view){
+        LayoutParams lp= (LayoutParams) view.getLayoutParams();
+        return (lp.openState & LayoutParams.FLAG_IS_OPENING)>0;
+    }
+    
     public boolean isDrawerOpen(int gravity) {
         if(gravity==Gravity.LEFT){
             return isDrawerOpen(mLeftDrawer);
