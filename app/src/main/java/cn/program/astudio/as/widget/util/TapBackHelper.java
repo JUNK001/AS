@@ -3,11 +3,13 @@ package cn.program.astudio.as.widget.util;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,31 +28,22 @@ public class TapBackHelper {
     private LinkedList<TapBack> tapBacks;
     private float mInitPointX;
     private float mInitPointY;
-    private View mContent;
+    private View mContain;
     private int touchDownTapLayersNum =0;
 
     private int mTouchSlop;
 
     private boolean isTapPerforming;
 
-    public final static HashMap<Context,TapBackHelper> tapBackHelpers=new HashMap<Context,TapBackHelper>();
-
     public TapBackHelper(Context context, View view){
         tapBacks =new LinkedList<TapBack>();
-        this.mContent =view;
+        this.mContain =view;
 
         mTouchSlop=ViewConfiguration.get(context).getScaledTouchSlop();
         mScrimPaint.setColor(DEFAULT_SCRIM_COLOR);
-
-        tapBackHelpers.put(context,this);
     }
 
-    public static TapBackHelper get(Context context) {
-        if(tapBackHelpers.get(context)==null){
-            Log.w(TAG, "the activity or other context not use BaseActivity or KXContentParentLayout");
-        }
-        return tapBackHelpers.get(context);
-    }
+
 
     public int size(){
         return tapBacks.size();
@@ -143,7 +136,7 @@ public class TapBackHelper {
     private Rect getRectLocation(View view) {
         View curView=view;
         Rect ret=new Rect(curView.getLeft(),curView.getTop(),curView.getRight(),curView.getBottom());
-        while(curView.getParent()!=null&& mContent.equals((View)curView.getParent())==false){
+        while(curView.getParent()!=null&& mContain.equals((View) curView.getParent())==false){
             ViewGroup parent= (ViewGroup) curView.getParent();
             int dx=parent.getLeft();
             int dy=parent.getTop();

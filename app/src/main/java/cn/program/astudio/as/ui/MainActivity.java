@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import cn.program.astudio.as.AppManager;
@@ -139,10 +140,23 @@ public class MainActivity extends BaseActivity implements
         AppManager.getAppManager().finishAllActivity();
     }
 
+    public void updateListDataByFilter(HashMap<String, String> filterParams) {
+
+    }
+
     private class DrawerListener extends KXDrawerLayout.SimpleDrawerListener {
 
         @Override
         public void onOpenStart(View drawerView) {
+            int othergravity=Gravity.LEFT;
+            if(mDrawerLayout.checkDrawerViewAbsoluteGravity(drawerView,Gravity.LEFT)){
+                othergravity=Gravity.TOP;
+            }else if(mDrawerLayout.checkDrawerViewAbsoluteGravity(drawerView,Gravity.TOP)){
+                othergravity=Gravity.LEFT;
+            }
+            if(mDrawerLayout.isDrawerOpen(othergravity)){
+                mDrawerLayout.closeDrawer(othergravity);
+            }
             for(int i=mTapHelper.size()-1;i>=0;i--){
                 mTapHelper.tap(i);
             }
@@ -202,9 +216,5 @@ public class MainActivity extends BaseActivity implements
             }
         }
         ft.commit();
-    }
-
-    public void updateListData(Map<String,String> data){
-
     }
 }

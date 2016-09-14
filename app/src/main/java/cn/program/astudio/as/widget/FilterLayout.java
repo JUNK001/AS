@@ -3,18 +3,12 @@ package cn.program.astudio.as.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -48,11 +42,13 @@ public class FilterLayout extends LinearLayout {
     private LinearLayout.LayoutParams spinnerlp;
     private LinearLayout.LayoutParams buttonlp;
 
-    private HashMap<String, String> resultMap;
+    private HashMap<String, View> items;
 
     private Context mContext;
 
     private float density;
+
+    private OnFilterListener onFilterListener;
 
     public FilterLayout(Context context) {
         this(context, null);
@@ -69,15 +65,17 @@ public class FilterLayout extends LinearLayout {
     public FilterLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs,defStyleAttr);
 
+        mContext=context;
+
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.filter);
 
-        textsize = 17;//a.getInt(R.styleable.filter_textsize, getResources().getDimensionPixelSize(R.dimen.text_size_15));
-        buttonsize = 15;//a.getInt(R.styleable.filter_textsize, getResources().getDimensionPixelSize(R.dimen.text_size_17));
+        textsize = 15;//a.getInt(R.styleable.filter_textsize, getResources().getDimensionPixelSize(R.dimen.text_size_15));
+        buttonsize = 17;//a.getInt(R.styleable.filter_textsize, getResources().getDimensionPixelSize(R.dimen.text_size_17));
 
         a.recycle();
 
-        resultMap = new HashMap<String, String>();
+        items = new HashMap<String, View>();
 
         initLayoutParam();
     }
@@ -86,6 +84,10 @@ public class FilterLayout extends LinearLayout {
         this.resid = resid;
 
         initView(getResources().getXml(resid));
+    }
+
+    public void setOnFilterListener(OnFilterListener listener){
+        this.onFilterListener=listener;
     }
 
     private int dp2sp(int dp) {
@@ -105,36 +107,43 @@ public class FilterLayout extends LinearLayout {
         buttonlp.gravity = Gravity.CENTER_HORIZONTAL;
     }
 
-    private void xml(XmlResourceParser xrp, ViewGroup parent) throws Exception {
+    private View xml(XmlResourceParser xrp, ViewGroup parent) throws Exception {
         int eventtype = xrp.next();
         String tagname = xrp.getName();
         if (tagname != null && tagname.equals("match")) {
-            EditText cchild = new EditText(getContext());
+            KXEditText cchild = new KXEditText(mContext);
             cchild.setLayoutParams(editlp);
             parent.addView(cchild);
 
             eventtype = xrp.next();
+
+            return cchild;
         }
         if (tagname != null && tagname.equals("list")) {
-            Spinner cchild = new Spinner(getContext());
+            Spinner cchild = new Spinner(mContext);
             cchild.setLayoutParams(spinnerlp);
 
             ArrayList<String> array = new ArrayList<String>();
-            KXSpinnerAdapter adapter = new KXSpinnerAdapter(getContext(), array);
-            cchild.setAdapter(adapter);
+            KXSpinnerAdapter adapter = new KXSpinnerAdapter(mContext, array);
+
 
             eventtype = xrp.next();
             while (eventtype == XmlPullParser.START_TAG) {
                 String value = xrp.getAttributeValue(null, "name");
+                Log.d(TAG, value);
                 array.add(value);
 
                 eventtype = xrp.next();
                 eventtype = xrp.next();
             }
 
-            adapter.notifyDataSetChanged();
+            cchild.setAdapter(adapter);
+
             parent.addView(cchild);
+
+            return cchild;
         }
+        return null;
     }
 
     private void initView( XmlResourceParser xrp) {
@@ -155,28 +164,38 @@ public class FilterLayout extends LinearLayout {
                         String tagname = xrp.getName();
                         if (tagname != null && tagname.equals("button")) {
                             String tagid = xrp.getAttributeValue(null, "name");
-                            cchild = new TextView(getContext());
+                            cchild = new TextView(mContext);
                             ((TextView) cchild).setTextSize(buttonsize);
                             ((TextView) cchild).setText(tagid);
+                            //((TextView) cchild).setBackground(getResources().getDrawable(R.drawable.color_white2gray_press));
+                            ((TextView) cchild).setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(onFilterListener!=null){
+                                        onFilterListener.onFilter(getFilterParam());
+                                    }
+                                }
+                            });
                             cchild.setLayoutParams(buttonlp);
 
                             addView(cchild);
                         }
                         if (tagname != null && tagname.equals("item")) {
-                            childview = new LinearLayout(getContext());
+                            childview = new LinearLayout(mContext);
                             childview.setOrientation(LinearLayout.HORIZONTAL);
                             childview.setLayoutParams(childlp);
 
                             String tagid = xrp.getAttributeValue(null, "name");
 
-                            cchild = new TextView(getContext());
+                            cchild = new TextView(mContext);
                             ((TextView) cchild).setTextSize(textsize);
-                            ((TextView) cchild).setGravity(Gravity.BOTTOM);
                             ((TextView) cchild).setText(tagid);
                             cchild.setLayoutParams(textlp);
                             childview.addView(cchild);
 
-                            xml(xrp, childview);
+                            View resultView=xml(xrp, childview);
+
+                            items.put(tagid, resultView);
 
                             addView(childview);
                         }
@@ -195,10 +214,25 @@ public class FilterLayout extends LinearLayout {
         childview = null;
     }
 
-    public HashMap<String, String> getResultMap() {
-        HashMap<String, String> map = new HashMap<String, String>();
+    public HashMap<String, String> getFilterParam () {
+        HashMap<String, String> filterParams = new HashMap<String, String>();
 
+        for(String key: items.keySet()){
+            View view= items.get(key);
 
-        return map;
+            if(view==null)continue;
+
+            if(view instanceof EditText){
+                filterParams.put(key,((EditText)view).getText().toString());
+            }else if(view instanceof Spinner){
+                filterParams.put(key,((TextView)((Spinner)view).getSelectedView()).getText().toString());
+            }
+        }
+
+        return filterParams;
+    }
+
+    public interface OnFilterListener{
+        void onFilter(HashMap<String, String> filterParams);
     }
 }

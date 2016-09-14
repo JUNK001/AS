@@ -29,7 +29,7 @@
             android:textSize="@dimen/text_size_23"
             android:layout_height="60dp" />
 
-        <EditText
+        <cn.program.astudio.as.widget.KXEditText
             android:id="@+id/et_password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:shadowColor="@color/blue"
             android:singleLine="true" />
 
-        <EditText
+        <cn.program.astudio.as.widget.KXEditText
             android:id="@+id/we"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

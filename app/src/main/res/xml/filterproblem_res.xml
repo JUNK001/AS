@@ -7,7 +7,8 @@
             <list>
                 <value name="all"/>
                 <value name="POJ"/>
-                <value anme="HDU"/>
+                <value name="HDU"/>
+                <value name="DRAME"/>
             </list>
         </item>
 

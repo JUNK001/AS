@@ -2,7 +2,11 @@ package cn.program.astudio.as.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
@@ -14,21 +18,23 @@ import org.kymjs.kjframe.widget.KJScrollView;
  * Created by JUNX on 2016/8/5.
  */
 public class KXScrollView extends ScrollView {
-    private static final float MOVE_FACTOR = 0.5F;
-    private static final int ANIM_TIME = 300;
-    private float startY;
+    public final static String TAG="KXSCROLLVIEW";
+
+    private static final float TOUCH_SLOP_SENSITIVITY = 0.5f;
+
+    private ViewDragHelper mDragerHelper;
     private View contentView;
-    private final Rect originalRect = new Rect();
-    private boolean canPullDown = false;
-    private boolean canPullUp = false;
-    private boolean isMoved = false;
 
     public KXScrollView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public KXScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        DragerCallback callback=new DragerCallback();
+        mDragerHelper=ViewDragHelper.create(this, TOUCH_SLOP_SENSITIVITY,callback );
+        callback.setDragger(mDragerHelper);
     }
 
     protected void onFinishInflate() {
@@ -38,79 +44,67 @@ public class KXScrollView extends ScrollView {
         }
     }
 
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        if(this.contentView != null) {
-            this.originalRect.set(this.contentView.getLeft(), this.contentView.getTop(), this.contentView.getRight(), this.contentView.getBottom());
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if(mDragerHelper.shouldInterceptTouchEvent(ev)){
+            requestDisallowInterceptTouchEvent(true);
+            Log.d(TAG,"GET");
+            return true;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public void computeScroll() {
+        if(mDragerHelper.continueSettling(true)){
+            ViewCompat.postInvalidateOnAnimation(this);
         }
     }
 
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(this.contentView == null) {
-            return super.dispatchTouchEvent(ev);
-        } else {
-            boolean isTouchOutOfScrollView = ev.getY() >= (float)this.getHeight() || ev.getY() <= 0.0F;
-            if(isTouchOutOfScrollView) {
-                if(this.isMoved) {
-                    this.boundBack();
-                }
-                return true;
-            } else {
-                int action = ev.getAction();
-                switch(action) {
-                    case MotionEvent.ACTION_DOWN:
-                        this.canPullDown = this.isCanPullDown();
-                        this.canPullUp = this.isCanPullUp();
-                        this.startY = ev.getY();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        this.boundBack();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        if(!this.canPullDown && !this.canPullUp) {
-                            this.startY = ev.getY();
-                            this.canPullDown = this.isCanPullDown();
-                            this.canPullUp = this.isCanPullUp();
-                        } else {
-                            float nowY = ev.getY();
-                            int deltaY = (int)(nowY - this.startY);
-                            boolean shouldMove = this.canPullDown && deltaY > 0 || this.canPullUp && deltaY < 0 || this.canPullUp && this.canPullDown;
-                            if(shouldMove) {
-                                int offset = (int)((float)deltaY * 0.5F);
-                                this.contentView.layout(this.originalRect.left, this.originalRect.top + offset, this.originalRect.right, this.originalRect.bottom + offset);
-                                this.isMoved = true;
-                            }
-                        }
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                        if(isMoved){
-                            this.boundBack();
-                        }
-                    default:
-                        ;
-                }
-                return super.dispatchTouchEvent(ev);
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        int action=ev.getActionMasked();
+        mDragerHelper.processTouchEvent(ev);
+        switch (action){
+            case MotionEvent.ACTION_UP:{
+                requestDisallowInterceptTouchEvent(false);
             }
+            break;
         }
+        return super.onTouchEvent(ev);
     }
 
-    public void boundBack() {
-        if(this.isMoved) {
-            TranslateAnimation anim = new TranslateAnimation(0.0F, 0.0F, (float)this.contentView.getTop(), (float)this.originalRect.top);
-            anim.setDuration(300L);
-            this.contentView.startAnimation(anim);
-            this.contentView.layout(this.originalRect.left, this.originalRect.top, this.originalRect.right, this.originalRect.bottom);
-            this.canPullDown = false;
-            this.canPullUp = false;
-            this.isMoved = false;
+    private class DragerCallback extends ViewDragHelper.Callback {
+        private ViewDragHelper mDragger;
+
+        public void setDragger(ViewDragHelper dragger) {
+            mDragger = dragger;
         }
-    }
 
-    private boolean isCanPullDown() {
-        return this.getScrollY() == 0 || this.contentView.getHeight() < this.getHeight() + this.getScrollY();
-    }
+        @Override
+        public boolean tryCaptureView(View child, int pointerId) {
+            return child==contentView;
+        }
 
-    private boolean isCanPullUp() {
-        return this.contentView.getHeight() <= this.getHeight() + this.getScrollY();
+        @Override
+        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            mDragger.settleCapturedViewAt(releasedChild.getLeft(), 0);
+            invalidate();
+        }
+
+        @Override
+        public int getViewVerticalDragRange(View child) {
+            return contentView.getHeight();
+        }
+
+        @Override
+        public int clampViewPositionHorizontal(View child, int left, int dx) {
+            return contentView.getLeft();
+        }
+
+        @Override
+        public int clampViewPositionVertical(View child, int top, int dy) {
+            return top;
+        }
     }
 }
