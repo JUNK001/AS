@@ -33,8 +33,6 @@ public class TapBackHelper {
 
     private int mTouchSlop;
 
-    private boolean isTapPerforming;
-
     public TapBackHelper(Context context, View view){
         tapBacks =new LinkedList<TapBack>();
         this.mContain =view;
@@ -55,7 +53,7 @@ public class TapBackHelper {
 
         int action=ev.getActionMasked();
 
-        if(isTapPerforming||touchDownTapLayersNum !=0&&action==MotionEvent.ACTION_DOWN){
+        if(touchDownTapLayersNum !=0&&action==MotionEvent.ACTION_DOWN){
             return true;
         }
 
@@ -89,7 +87,6 @@ public class TapBackHelper {
                 if(isTapTouch){
                     while(touchDownTapLayersNum >0) {
                         Log.d(TAG,"ontap");
-                        isTapPerforming=true;
                         tapBacks.getLast().getTapCallBack().onTap();
                         touchDownTapLayersNum--;
                     }
@@ -118,7 +115,6 @@ public class TapBackHelper {
                 if(isTapTouch){
                     while(touchDownTapLayersNum >0) {
                         Log.d(TAG,"ontap");
-                        isTapPerforming=true;
                         tapBacks.getLast().getTapCallBack().onTap();
                         touchDownTapLayersNum--;
                     }
@@ -160,7 +156,6 @@ public class TapBackHelper {
         if(tapBacks.isEmpty()==false&& tapBacks.getLast()==tapBack){
             tapBacks.remove(tapBack);
             tapBack.setIsStack(false);
-            isTapPerforming=false;
         }else{
             Log.w(TAG,"last tapBack may not be remove");
         }
@@ -171,10 +166,6 @@ public class TapBackHelper {
             TapBack tapBack= tapBacks.get(index);
             tapBack.getTapCallBack().onTap();
         }
-    }
-
-    public void setIsTapPerforming(boolean isTapPerforming) {
-        this.isTapPerforming = isTapPerforming;
     }
 
     public interface TapCallBack {

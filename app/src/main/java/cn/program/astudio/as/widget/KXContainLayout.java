@@ -39,6 +39,8 @@ public class KXContainLayout extends FrameLayout {
 
     private View inputFocusView;
 
+    private boolean shouldClearFocus;
+
     private Context mContext;
 
     public KXContainLayout(Context context) {
@@ -109,7 +111,7 @@ public class KXContainLayout extends FrameLayout {
 
                 Log.d(TAG,"onInputMethodClose");
 
-                inputFocusView.clearFocus();
+                if(shouldClearFocus)inputFocusView.clearFocus();
                 isInputMethodOpen=false;
                 if(inputMethodListener!=null) {
                     inputMethodListener.onInputMethodClose();
@@ -157,10 +159,12 @@ public class KXContainLayout extends FrameLayout {
     }
 
     public void removeInputTapBack() {
+        shouldClearFocus=true;
         mTapBackHelper.remove(inputTapBack);
     }
 
     public void addInputTapBack(View focusEditText) {
+        shouldClearFocus=false;
         this.inputFocusView=focusEditText;
         inputTapBack.setView(focusEditText);
         mTapBackHelper.addTapBackLayer(inputTapBack);
@@ -178,11 +182,17 @@ public class KXContainLayout extends FrameLayout {
         }
     }
 
-    public void hideKeyboard() {
+    private void hideKeyboard() {
         IBinder token= getWindowToken();
         if (token != null) {
             InputMethodManager im = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
             im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    public void hideSoftboard(){
+        if(inputFocusView!=null&&shouldClearFocus==false){
+            hideKeyboard();
         }
     }
 }
