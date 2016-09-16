@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.MotionEventCompat;
@@ -79,11 +80,6 @@ public class KXDrawerLayout extends ViewGroup {
 
     public boolean isDrawerOpen(View view) {
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
-        if ((lp.openState & LayoutParams.FLAG_IS_OPENED) > 0) {
-            Log.d(TAG, "check" + getGravityName(view) + "open");
-        } else {
-            Log.d(TAG, "check" + getGravityName(view) + "close");
-        }
         return (lp.openState & LayoutParams.FLAG_IS_OPENED) > 0;
     }
 
@@ -241,8 +237,6 @@ public class KXDrawerLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.d(TAG, "onMeasure");
-
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -253,7 +247,6 @@ public class KXDrawerLayout extends ViewGroup {
                     "DrawerLayout must be measured with MeasureSpec.EXACTLY.");
         }
 
-        Log.d(TAG, "Measure" + String.valueOf(widthSize) + " " + String.valueOf(heightSize));
         setMeasuredDimension(widthSize, heightSize);
 
         final int childCount = getChildCount();
@@ -285,10 +278,8 @@ public class KXDrawerLayout extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.d(TAG, "onLayout");
         isInLayout = true;
 
-        Log.d(TAG, "layout" + String.valueOf(r - l) + " " + String.valueOf(b - t));
         int width = r - l;
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -368,6 +359,20 @@ public class KXDrawerLayout extends ViewGroup {
         }
         return interceptForDrag || interceptForTap;
     }
+
+/*    @Override
+    protected boolean isTransformedTouchPointInView(float x, float y, View child,
+                                                    PointF outLocalPoint) {
+        final float[] point = getTempPoint();
+        point[0] = x;
+        point[1] = y;
+        transformPointToViewLocal(point, child);
+        final boolean isInView = child.pointInView(point[0], point[1]);
+        if (isInView && outLocalPoint != null) {
+            outLocalPoint.set(point[0], point[1]);
+        }
+        return isInView;
+    }*/
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -753,19 +758,16 @@ public class KXDrawerLayout extends ViewGroup {
 
     @Override
     protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
-        Log.d(TAG, "generateDefaultLayoutParams");
         return new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }
 
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        Log.d(TAG, "generateLayoutParams attr");
         return new LayoutParams(getContext(), attrs);
     }
 
     @Override
     protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
-        Log.d(TAG, "generateLayoutParams laypam");
         return p instanceof LayoutParams
                 ? new LayoutParams((LayoutParams) p)
                 : p instanceof ViewGroup.MarginLayoutParams

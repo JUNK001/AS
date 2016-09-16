@@ -29,6 +29,12 @@ public class ProblemFragment extends BaseFragment {
 
     private void initView(View view) {
 
+        view.findViewById(R.id.et1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppContext.showToast("asd");
+            }
+        });
     }
 
     @Override

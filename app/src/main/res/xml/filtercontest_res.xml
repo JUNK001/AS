@@ -13,14 +13,16 @@
             <list>
                 <value name="all"/>
                 <value name="public"/>
-                <value anme="private"/>
+                <value name="private"/>
             </list>
         </item>
 
-        <item>
+        <item name="manager">
             <match>
                 <value name="*"/>
             </match>
         </item>
+
+        <button name="OK" />
     </filter>
 </resources>

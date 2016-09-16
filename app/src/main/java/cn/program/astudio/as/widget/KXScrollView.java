@@ -1,18 +1,12 @@
 package cn.program.astudio.as.widget;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.TranslateAnimation;
 import android.widget.ScrollView;
-
-import org.kymjs.kjframe.widget.KJScrollView;
 
 /**
  * Created by JUNX on 2016/8/5.
@@ -48,7 +42,6 @@ public class KXScrollView extends ScrollView {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if(mDragerHelper.shouldInterceptTouchEvent(ev)){
             requestDisallowInterceptTouchEvent(true);
-            Log.d(TAG,"GET");
             return true;
         }
         return super.onInterceptTouchEvent(ev);

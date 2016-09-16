@@ -51,8 +51,20 @@ public class BaseActivity extends AppCompatActivity {
         return mTapBackHelper;
     }
 
+    public KXContainLayout getKxContainLayout(){
+        return kxContainLayout;
+    }
+
     @Override
     public void finish() {
         AppManager.getAppManager().finishActivity();
+    }
+
+    protected void hideKeyboard() {
+        IBinder token= getWindow().getDecorView().getWindowToken();
+        if (token != null) {
+            InputMethodManager im = (InputMethodManager) getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

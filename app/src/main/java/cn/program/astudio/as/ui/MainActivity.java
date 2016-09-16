@@ -163,8 +163,8 @@ public class MainActivity extends BaseActivity implements
         }
 
         @Override
-        public void onDrawerCaptured(View drawerView) {
-
+        public void onDrawerClosed(View drawerView) {
+            hideKeyboard();
         }
     }
 
@@ -184,7 +184,7 @@ public class MainActivity extends BaseActivity implements
             Fragment lastFragment=manager.findFragmentByTag(lastMainContent.getTag());
             if(lastFragment!=null){
                 ft.hide(lastFragment);
-                Fragment filterFragment=manager.findFragmentByTag(currentMainContent.getTag() + "FILTER");
+                Fragment filterFragment=manager.findFragmentByTag(lastMainContent.getTag() + "FILTER");
                 if(filterFragment!=null){
                     ft.hide(filterFragment);
                 }

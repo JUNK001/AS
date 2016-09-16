@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -24,7 +24,7 @@ import cn.program.astudio.as.R;
 /**
  * Created by JUNX on 2016/8/31.
  */
-public class FilterLayout extends LinearLayout {
+public class KXFilterLayout extends LinearLayout {
 
     public final static String TAG = "FILTERFRAGMENT";
 
@@ -50,19 +50,19 @@ public class FilterLayout extends LinearLayout {
 
     private OnFilterListener onFilterListener;
 
-    public FilterLayout(Context context) {
+    public KXFilterLayout(Context context) {
         this(context, null);
     }
 
-    public FilterLayout(Context context, AttributeSet attrs) {
+    public KXFilterLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FilterLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public KXFilterLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr,0);
     }
 
-    public FilterLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public KXFilterLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs,defStyleAttr);
 
         mContext=context;
@@ -130,7 +130,6 @@ public class FilterLayout extends LinearLayout {
             eventtype = xrp.next();
             while (eventtype == XmlPullParser.START_TAG) {
                 String value = xrp.getAttributeValue(null, "name");
-                Log.d(TAG, value);
                 array.add(value);
 
                 eventtype = xrp.next();
@@ -212,6 +211,11 @@ public class FilterLayout extends LinearLayout {
         }
         cchild = null;
         childview = null;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return true;
     }
 
     public HashMap<String, String> getFilterParam () {

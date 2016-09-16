@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/et1"
             android:text="Hello World!"
             android:layout_width="wrap_content"
             android:textSize="@dimen/text_size_23"
@@ -20,12 +21,6 @@
         <TextView
             android:text="Hello World!"
             android:layout_width="wrap_content"
-            android:textSize="@dimen/text_size_23"
-            android:layout_height="60dp" />
-        <TextView
-            android:text="Hello World!"
-            android:layout_width="wrap_content"
-            android:clickable="true"
             android:textSize="@dimen/text_size_23"
             android:layout_height="60dp" />
 
@@ -45,6 +40,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
             android:layout_below="@+id/et_password"
+            android:layout_alignParentBottom="true"/>
+        <cn.program.astudio.as.widget.KXEditText
+            android:id="@+id/we1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:layout_below="@+id/we"
+            android:layout_alignParentBottom="true"/>
+        <cn.program.astudio.as.widget.KXEditText
+            android:id="@+id/we2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:layout_below="@+id/we1"
             android:layout_alignParentBottom="true"/>
     </LinearLayout>
 </RelativeLayout>

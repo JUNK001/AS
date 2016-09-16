@@ -3,6 +3,7 @@ package cn.program.astudio.as.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import cn.program.astudio.as.AppContext;
 import cn.program.astudio.as.R;
 import cn.program.astudio.as.base.BaseFragment;
+import cn.program.astudio.as.ui.MainActivity;
 
 /**
  * Created by CC on 2016/6/18.
@@ -32,7 +34,14 @@ public class ContestFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int itemid=item.getItemId();
+        switch (itemid){
+            case R.id.filter:{
+                ((MainActivity)getActivity()).toggleDrawer(Gravity.TOP);
+                return true;
+            }
 
-        return super.onOptionsItemSelected(item);
+        }
+        return false;
     }
 }

@@ -23,6 +23,8 @@ public class KXContainLayout extends FrameLayout {
 
     private final static String TAG="KXPARENTLAYOUT";
 
+    private static final int SOFTBOARD_DISAPPERA_DELAY = 50;
+
     private int MEASUREALTER_SENSITIVE =100;
     private boolean mFirstMeasure;
     private int widthMeasureSpec;
@@ -38,8 +40,6 @@ public class KXContainLayout extends FrameLayout {
     private TapBack inputTapBack;
 
     private View inputFocusView;
-
-    private boolean shouldClearFocus;
 
     private Context mContext;
 
@@ -92,6 +92,13 @@ public class KXContainLayout extends FrameLayout {
         isInputMethodOpen=false;
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        this.widthMeasureSpec=MeasureSpec.makeMeasureSpec(w,MeasureSpec.EXACTLY);
+        this.heightMeasureSpec=MeasureSpec.makeMeasureSpec(h,MeasureSpec.EXACTLY);;
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
+
     boolean isAlterToInput(int heightMeasureSpec,int heightMeasureSpeclocal){
         int heightsize=MeasureSpec.getSize(heightMeasureSpec);
         int heightsizelocal=MeasureSpec.getSize(heightMeasureSpeclocal);
@@ -111,7 +118,7 @@ public class KXContainLayout extends FrameLayout {
 
                 Log.d(TAG,"onInputMethodClose");
 
-                if(shouldClearFocus)inputFocusView.clearFocus();
+                if(inputFocusView!=null)inputFocusView.clearFocus();
                 isInputMethodOpen=false;
                 if(inputMethodListener!=null) {
                     inputMethodListener.onInputMethodClose();
@@ -159,12 +166,13 @@ public class KXContainLayout extends FrameLayout {
     }
 
     public void removeInputTapBack() {
-        shouldClearFocus=true;
+        inputFocusView=null;
         mTapBackHelper.remove(inputTapBack);
+        mTapBackHelper.setPerforming(false);
+        removeCallbacks(inputTapRunnable);
     }
 
     public void addInputTapBack(View focusEditText) {
-        shouldClearFocus=false;
         this.inputFocusView=focusEditText;
         inputTapBack.setView(focusEditText);
         mTapBackHelper.addTapBackLayer(inputTapBack);
@@ -175,10 +183,17 @@ public class KXContainLayout extends FrameLayout {
         void onInputMethodClose();
     }
 
+    private Runnable inputTapRunnable=new Runnable() {
+        @Override
+        public void run() {
+            hideKeyboard();
+        }
+    };
+
     private class InputTapBack implements TapBackHelper.TapCallBack{
 
         public void onTap(){
-            hideKeyboard();
+            postDelayed(inputTapRunnable,SOFTBOARD_DISAPPERA_DELAY);
         }
     }
 
@@ -191,7 +206,7 @@ public class KXContainLayout extends FrameLayout {
     }
 
     public void hideSoftboard(){
-        if(inputFocusView!=null&&shouldClearFocus==false){
+        if(inputFocusView!=null){
             hideKeyboard();
         }
     }

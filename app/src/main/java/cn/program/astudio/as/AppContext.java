@@ -255,7 +255,7 @@ public class AppContext extends Application {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static SharedPreferences getPreferences() {
         SharedPreferences pre = getInstance().getApplicationContext().getSharedPreferences(PREF_NAME,
-                Context.MODE_MULTI_PROCESS);
+                Context .MODE_MULTI_PROCESS);
         return pre;
     }
 

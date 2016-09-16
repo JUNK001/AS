@@ -33,6 +33,8 @@ public class TapBackHelper {
 
     private int mTouchSlop;
 
+    private boolean isPerforming ;
+
     public TapBackHelper(Context context, View view){
         tapBacks =new LinkedList<TapBack>();
         this.mContain =view;
@@ -47,13 +49,17 @@ public class TapBackHelper {
         return tapBacks.size();
     }
 
+    public void setPerforming(boolean performing){
+        this.isPerforming=performing;
+    }
+
     public boolean shouldInterceptTouchEvent(MotionEvent ev){
         final float x=ev.getX();
         final float y=ev.getY();
 
         int action=ev.getActionMasked();
 
-        if(touchDownTapLayersNum !=0&&action==MotionEvent.ACTION_DOWN){
+        if(isPerforming||touchDownTapLayersNum !=0&&action==MotionEvent.ACTION_DOWN){
             return true;
         }
 
@@ -87,6 +93,7 @@ public class TapBackHelper {
                 if(isTapTouch){
                     while(touchDownTapLayersNum >0) {
                         Log.d(TAG,"ontap");
+                        isPerforming=true;
                         tapBacks.getLast().getTapCallBack().onTap();
                         touchDownTapLayersNum--;
                     }
@@ -100,7 +107,7 @@ public class TapBackHelper {
     }
 
     public boolean processTouchEvent(MotionEvent event){
-        if(touchDownTapLayersNum ==0){
+        if(isPerforming||touchDownTapLayersNum ==0){
             return false;
         }
         final float x=event.getX();
@@ -115,6 +122,7 @@ public class TapBackHelper {
                 if(isTapTouch){
                     while(touchDownTapLayersNum >0) {
                         Log.d(TAG,"ontap");
+                        isPerforming=true;
                         tapBacks.getLast().getTapCallBack().onTap();
                         touchDownTapLayersNum--;
                     }
@@ -154,6 +162,7 @@ public class TapBackHelper {
     public void remove(TapBack tapBack) {
         Log.d(TAG,"TapBackDel");
         if(tapBacks.isEmpty()==false&& tapBacks.getLast()==tapBack){
+            isPerforming=false;
             tapBacks.remove(tapBack);
             tapBack.setIsStack(false);
         }else{
