@@ -3,6 +3,8 @@ package cn.program.astudio.as.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -59,7 +61,7 @@ public class KXFilterLayout extends LinearLayout {
     }
 
     public KXFilterLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr,0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public KXFilterLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -84,6 +86,13 @@ public class KXFilterLayout extends LinearLayout {
         this.resid = resid;
 
         initView(getResources().getXml(resid));
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        removeAllViews();
+        initView(getResources().getXml(resid));
+        super.onSizeChanged(w, h, oldw, oldh);
     }
 
     public void setOnFilterListener(OnFilterListener listener){

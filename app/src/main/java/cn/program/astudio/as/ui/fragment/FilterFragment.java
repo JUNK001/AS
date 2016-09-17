@@ -1,6 +1,8 @@
 package cn.program.astudio.as.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
